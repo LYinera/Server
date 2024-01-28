@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.company.mapper.UserMapper">
+
+    <select id="selectUserByUidAndPassword" resultType="com.company.entity.User">
+        select *
+        from user
+        where uid = #{uid}
+          and password = #{password}
+    </select>
+
+    <select id="selectUsers" resultType="com.company.vo.UserVO">
+        select U.Uid,U.UserName,l.level_name,U.status
+        from user U
+        left join
+        Level L on U.Level = L.level
+        <where>
+            and u.status = 1
+            <if test="username != null and username != ''">
+                and U.UserName =#{username}
+            </if>
+            <if test="level != null">
+                and U.Level = #{level}
+            </if>
+        </where>
+    </select>
+
+    <update id="deleteUserByUid">
+        update user
+        set status = 0
+        where uid = #{uid}
+    </update>
+
+    <insert id="insertUser">
+        insert into user
+        values (#{uid}, #{username}, #{password}, #{email}, '1', '1')
+    </insert>
+
+    <update id="updateUser">
+        update
+            user
+        set username    = #{username},
+            password       = #{password}
+        where uid = #{uid}
+    </update>
+
+    <select id="selectUserByUserName" resultType="com.company.entity.User">
+        select *
+        from user
+        where UserName = #{username}
+    </select>
+    <select id="selectUserByUid" resultType="com.company.entity.User">
+        select *
+        from user
+        where uid = #{uid}
+    </select>
+
+    <!-- 修改密码  -->
+    <update id="updateUserByPassword">
+        update user
+        set password = #{newPassword}
+        where uid = #{uid}
+          and password = #{oldPassword}
+    </update>
+</mapper>
